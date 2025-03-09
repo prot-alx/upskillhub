@@ -9,6 +9,7 @@ import {
   Button,
   Text,
 } from "@mantine/core";
+import { ThemeSwitcher } from "@/components/ui/ThemeSwitcher";
 
 export default function SettingsPage() {
   const [notifications, setNotifications] = useState(true);
@@ -37,6 +38,7 @@ export default function SettingsPage() {
                 label={notifications ? "Включены" : "Отключены"}
               />
             </Group>
+            <ThemeSwitcher/>
             <Button type="submit" color="blue">
               Сохранить
             </Button>

@@ -6,7 +6,7 @@ declare module "next-auth" {
   interface User {
     id: string;
   }
- 
+
   interface Session {
     accessToken?: string;
     user: {
@@ -14,7 +14,11 @@ declare module "next-auth" {
       name?: string | null;
       email?: string | null;
       image?: string | null;
-    }
+      settings?: {
+        theme: "light" | "dark";
+        // [key: string]: any; // Для будущих настроек
+      };
+    };
   }
 }
 
@@ -22,5 +26,9 @@ declare module "next-auth/jwt" {
   interface JWT {
     id: string;
     accessToken?: string;
+    settings?: {
+      theme: "light" | "dark"; // пока что дергаем напрямую
+      // [key: string]: any; // Для будущих настроек
+    };
   }
 }

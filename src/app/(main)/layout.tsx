@@ -1,7 +1,7 @@
-// dashboard/layout.tsx
+// app/(main)/layout.tsx
 import ClientAppLayout from "@/components/layout/ClientAppLayout";
 
-export default function DashboardLayout({
+export default function MainLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
