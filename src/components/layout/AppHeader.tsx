@@ -1,4 +1,3 @@
-// components/layout/AppHeader.tsx
 "use client";
 
 import { Group, Burger, Text, Container, Avatar } from "@mantine/core";

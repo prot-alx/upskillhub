@@ -1,4 +1,5 @@
 "use client";
+
 import { useState } from "react";
 import { Button } from "@mantine/core";
 import { signIn, signOut } from "next-auth/react";

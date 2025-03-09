@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { AppShell, Container, Center, Loader, Text } from "@mantine/core";
 import { useSession } from "next-auth/react";
@@ -16,8 +16,7 @@ export default function ClientAppLayout({
 
   const [sidebarOpened, setSidebarOpened] = useState(true);
 
-  // потом перенести состояние в стейт менеджер
-  const isDashboardPage = useMemo(() => pathname?.startsWith("/dashboard"), [pathname]);
+  const isDashboardPage = pathname?.startsWith("/dashboard");
 
   useEffect(() => {
     if (status === "unauthenticated" && isDashboardPage) {

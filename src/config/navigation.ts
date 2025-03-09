@@ -5,7 +5,7 @@ import {
   IconSettings,
 } from "@tabler/icons-react";
 
-// Основная навигация (всегда видна в хедере)
+// Основная навигация
 export const mainNavLinks = [
   { href: "/", label: "Главная" },
   { href: "/courses", label: "Все курсы" },

@@ -1,4 +1,3 @@
-// app/layout.tsx (Серверная часть)
 import { MantineProvider } from "@mantine/core";
 import { QueryProvider } from "@/providers/QueryProvider";
 import AuthProvider from "@/providers/AuthProvider";
