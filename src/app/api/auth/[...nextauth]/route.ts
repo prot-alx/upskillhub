@@ -19,33 +19,25 @@ const handler = NextAuth({
       },
     }),
   ],
-  // Остальные настройки...
+  secret: process.env.NEXTAUTH_SECRET,
   pages: {
     signIn: "/auth",
     error: "/auth",
   },
   callbacks: {
-    async jwt({ token, account }) {
-      if (account) {
+    async jwt({ token, account, user }) {
+      if (account && user) {
         token.accessToken = account.access_token;
-        if (token.sub) {
-          token.id = token.sub;
-        }
+        token.id = user.id ?? token.sub ?? "temp-id";
+        token.settings = token.settings || { theme: "light" };
       }
       return token;
     },
     async session({ session, token }) {
       if (token && session.user) {
-        if (token.id) {
-          session.user.id = token.id;
-        } else if (token.sub) {
-          session.user.id = token.sub;
-        } else {
-          session.user.id = "temp-id";
-        }
-        if (token.accessToken) {
-          session.accessToken = token.accessToken;
-        }
+        session.user.id = token.id;
+        session.accessToken = token.accessToken;
+        session.user.settings = token.settings;
       }
       return session;
     },

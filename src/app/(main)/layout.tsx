@@ -1,4 +1,3 @@
-// app/(main)/layout.tsx
 import ClientAppLayout from "@/components/layout/ClientAppLayout";
 
 export default function MainLayout({

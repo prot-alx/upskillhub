@@ -16,7 +16,7 @@ declare module "next-auth" {
       image?: string | null;
       settings?: {
         theme: "light" | "dark";
-        // [key: string]: any; // Для будущих настроек
+        [key: string]: unknown; // Для будущих настроек
       };
     };
   }
@@ -27,8 +27,8 @@ declare module "next-auth/jwt" {
     id: string;
     accessToken?: string;
     settings?: {
-      theme: "light" | "dark"; // пока что дергаем напрямую
-      // [key: string]: any; // Для будущих настроек
+      theme: "light" | "dark";
+      [key: string]: unknown;
     };
   }
 }

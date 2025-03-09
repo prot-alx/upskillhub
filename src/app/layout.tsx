@@ -1,4 +1,3 @@
-// app/layout.tsx
 import { cookies } from "next/headers";
 import ClientMantineProvider from "@/components/ClientMantineProvider";
 import { QueryProvider } from "@/providers/QueryProvider";
@@ -22,8 +21,7 @@ export default async function RootLayout({
 
   return (
     <html lang="ru" data-mantine-color-scheme={initialTheme}>
-      <head>
-      </head>
+      <head></head>
       <body>
         <ClientMantineProvider initialTheme={initialTheme}>
           <QueryProvider>

@@ -11,19 +11,27 @@ export async function middleware(req: NextRequest) {
 
   console.log("Статус токена:", token ? "Валидный" : "Отсутствует");
 
-  // Защищенные маршруты - редирект неавторизованных пользователей
+  const response = NextResponse.next();
+
+  const theme =
+    token?.settings?.theme || req.cookies.get("my-app-theme")?.value || "light";
+  console.log("Тема для SSR:", theme);
+  response.cookies.set("my-app-theme", theme, {
+    path: "/",
+    maxAge: 31536000,
+  });
+
   if (!token && req.nextUrl.pathname.startsWith("/dashboard")) {
     console.log("Пользователь не авторизован! Редирект на главную");
     return NextResponse.redirect(new URL("/", req.url));
   }
 
-  // Страница аутентификации - редирект авторизованных пользователей
   if (token && req.nextUrl.pathname === "/auth") {
     console.log("Пользователь уже авторизован! Редирект в dashboard");
     return NextResponse.redirect(new URL("/dashboard", req.url));
   }
 
-  return NextResponse.next();
+  return response;
 }
 
 export const config = {
