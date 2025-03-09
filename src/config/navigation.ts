@@ -3,20 +3,18 @@ import {
   IconBook,
   IconUser,
   IconSettings,
-  IconHome,
 } from "@tabler/icons-react";
 
-// Навигация основного меню
+// Основная навигация (всегда видна в хедере)
 export const mainNavLinks = [
+  { href: "/", label: "Главная" },
   { href: "/courses", label: "Все курсы" },
-  { href: "/dashboard", label: "Личный кабинет", authRequired: true },
 ];
 
-// Навигация dashboard
+// Навигация dashboard для авторизованных пользователей
 export const dashboardLinks = [
   { href: "/dashboard", label: "Статистика", icon: IconDashboard },
   { href: "/dashboard/profile", label: "Профиль", icon: IconUser },
   { href: "/dashboard/courses", label: "Курсы", icon: IconBook },
   { href: "/dashboard/settings", label: "Настройки", icon: IconSettings },
-  { href: "/", label: "На главную", icon: IconHome, divider: true },
 ];

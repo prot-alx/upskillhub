@@ -6,7 +6,6 @@ import ClientAppLayout from "@/components/layout/ClientAppLayout";
 import "@mantine/core/styles.css";
 import "./globals.css";
 
-// Теперь метаданные могут быть экспортированы из серверного компонента
 export const metadata = {
   title: "Моё приложение",
   description: "Описание приложения",
@@ -19,11 +18,11 @@ export default function RootLayout({
     <html lang="ru">
       <body>
         <MantineProvider>
-          <AuthProvider>
-            <QueryProvider>
+          <QueryProvider>
+            <AuthProvider>
               <ClientAppLayout>{children}</ClientAppLayout>
-            </QueryProvider>
-          </AuthProvider>
+            </AuthProvider>
+          </QueryProvider>
         </MantineProvider>
       </body>
     </html>

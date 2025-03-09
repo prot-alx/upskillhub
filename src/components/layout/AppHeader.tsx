@@ -1,82 +1,45 @@
 // components/layout/AppHeader.tsx
 "use client";
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { Group, Burger, Avatar, Text, Container } from "@mantine/core";
+import { Group, Burger, Text, Container, Avatar } from "@mantine/core";
 import { useSession } from "next-auth/react";
 import GoogleLoginLogoutButton from "@/features/auth/GoogleLoginLogoutButton";
 import { mainNavLinks } from "@/config/navigation";
+import NavLinksList from "./NavLinksList";
 
 interface AppHeaderProps {
-  isDashboardPage: boolean;
-  navbarOpened: boolean;
-  setNavbarOpened: (opened: boolean) => void;
-  mobileMenuOpened: boolean;
-  setMobileMenuOpened: (opened: boolean) => void;
+  sidebarOpened: boolean;
+  setSidebarOpened: (opened: boolean) => void;
+  showSidebar: boolean;
 }
 
 export default function AppHeader({
-  isDashboardPage,
-  navbarOpened,
-  setNavbarOpened,
-  mobileMenuOpened,
-  setMobileMenuOpened,
+  sidebarOpened,
+  setSidebarOpened,
+  showSidebar,
 }: Readonly<AppHeaderProps>) {
   const { data: session, status } = useSession();
-  const pathname = usePathname();
 
   return (
     <Container size="lg" h="100%">
       <Group h="100%" justify="space-between">
         <Group>
-          {/* Бургер для бокового меню dashboard */}
-          {isDashboardPage && (
+          {/* Бургер меню только для авторизованных пользователей */}
+          {showSidebar && (
             <Burger
-              opened={navbarOpened}
-              onClick={() => setNavbarOpened(!navbarOpened)}
+              opened={sidebarOpened}
+              onClick={() => setSidebarOpened(!sidebarOpened)}
               size="sm"
               hiddenFrom="sm"
             />
           )}
 
-          {/* Бургер для основного меню (на мобильных) */}
-          {!isDashboardPage && (
-            <Burger
-              opened={mobileMenuOpened}
-              onClick={() => setMobileMenuOpened(!mobileMenuOpened)}
-              size="sm"
-              hiddenFrom="sm"
-            />
-          )}
-
-          <Link href="/" style={{ textDecoration: "none", color: "inherit" }}>
-            <Text fw={700} size="lg">
-              Главная
-            </Text>
-          </Link>
-
-          {/* Основная навигация - видна только на десктопах */}
-          <Group ml="xl" gap="md" visibleFrom="sm">
-            {mainNavLinks.map(
-              ({ href, label, authRequired }) =>
-                (!authRequired || status === "authenticated") && (
-                  <Link
-                    key={href}
-                    href={href}
-                    style={{ textDecoration: "none" }}
-                  >
-                    <Text
-                      component="span"
-                      c={pathname?.startsWith(href) ? "blue" : undefined}
-                      fw={pathname?.startsWith(href) ? 600 : 400}
-                    >
-                      {label}
-                    </Text>
-                  </Link>
-                )
-            )}
-          </Group>
+          {/* Основная навигация */}
+          <NavLinksList
+            links={mainNavLinks}
+            linkComponent="text-link"
+            onLinkClick={() => {}}
+          />
         </Group>
 
         <Group>

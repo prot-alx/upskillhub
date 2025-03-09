@@ -26,8 +26,8 @@ export default function MobileMenu({ onLinkClick }: Readonly<MobileMenuProps>) {
       }}
     >
       {mainNavLinks.map(
-        ({ href, label, authRequired }) =>
-          (!authRequired || status === "authenticated") && (
+        ({ href, label }) =>
+          status === "authenticated" && (
             <Link
               key={href}
               href={href}
