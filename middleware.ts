@@ -1,18 +1,24 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getToken } from "next-auth/jwt";
 
-export function middleware(req: NextRequest) {
+export async function middleware(req: NextRequest) {
   console.log("Запрос в middleware");
-  const isAuth = req.cookies.get("next-auth.session-token");
-  console.log("Найден токен:", isAuth);
 
-  if (!isAuth && req.nextUrl.pathname.startsWith("/dashboard")) {
-    console.log("Пользователь не авторизован! Редирект на /auth");
-    return NextResponse.redirect(new URL("/auth", req.url));
+  const token = await getToken({ 
+    req, 
+    secret: process.env.NEXTAUTH_SECRET 
+  });
+
+  console.log("Статус токена:", token ? "Валидный" : "Отсутствует");
+
+  if (!token && req.nextUrl.pathname.startsWith("/dashboard")) {
+    console.log("Пользователь не авторизован! Редирект на главную");
+    return NextResponse.redirect(new URL("/", req.url));
   }
 
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*"],
+  matcher: ["/dashboard/:path*", "/switch-account"],
 };

@@ -10,14 +10,20 @@ const handler = NextAuth({
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID ?? "",
       clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? "",
+      authorization: {
+        params: {
+          prompt: "select_account",
+          access_type: "offline",
+          response_type: "code",
+        },
+      },
     }),
   ],
-
+  // Остальные настройки...
   pages: {
-    signIn: "/auth", // URL страницы входа
-    error: "/auth", // URL для отображения ошибок аутентификации
+    signIn: "/auth",
+    error: "/auth",
   },
-
   callbacks: {
     async jwt({ token, account }) {
       if (account) {
@@ -28,7 +34,6 @@ const handler = NextAuth({
       }
       return token;
     },
-
     async session({ session, token }) {
       if (token && session.user) {
         if (token.id) {
@@ -38,7 +43,6 @@ const handler = NextAuth({
         } else {
           session.user.id = "temp-id";
         }
-
         if (token.accessToken) {
           session.accessToken = token.accessToken;
         }
@@ -46,12 +50,10 @@ const handler = NextAuth({
       return session;
     },
   },
-
   session: {
     strategy: "jwt",
-    maxAge: 30 * 24 * 60 * 60, // 30 дней
+    maxAge: 30 * 24 * 60 * 60,
   },
-
   debug: process.env.NODE_ENV === "development",
 });
 

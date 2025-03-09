@@ -1,36 +1,16 @@
 "use client";
-import { signIn, useSession } from "next-auth/react";
-import {
-  Button,
-  Container,
-  Text,
-  Stack,
-  Alert,
-  Paper,
-  Title,
-} from "@mantine/core";
+import { useSession } from "next-auth/react";
+import { Container, Text, Stack, Alert, Paper, Title } from "@mantine/core";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import GoogleLoginLogoutButton from "@/features/auth/GoogleLoginLogoutButton";
 
 export default function AuthPage() {
   const { status } = useSession();
   const router = useRouter();
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-
-  const handleGoogleSignIn = async () => {
-    setIsLoading(true);
-    setError("");
-
-    try {
-      await signIn("google", { callbackUrl: "/dashboard" });
-    } catch (err) {
-      console.error("Ошибка при авторизации:", err);
-      setError("Произошла ошибка при авторизации через Google.");
-      setIsLoading(false);
-    }
-  };
 
   if (status === "authenticated") {
     router.push("/dashboard");
@@ -57,15 +37,12 @@ export default function AuthPage() {
           {status === "loading" ? (
             <Text>Загрузка...</Text>
           ) : (
-            <Button
-              size="lg"
-              color="blue"
-              onClick={handleGoogleSignIn}
-              loading={isLoading}
-              fullWidth
-            >
-              Войти через Google
-            </Button>
+            <GoogleLoginLogoutButton
+              isAuth={status}
+              onError={setError}
+              onLoadingChange={setIsLoading}
+              callbackUrl="/dashboard"
+            />
           )}
 
           <Link href="/" style={{ marginTop: "20px" }}>

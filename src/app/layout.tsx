@@ -1,11 +1,13 @@
-import type { Metadata } from "next";
-import { QueryProvider } from "@/providers/QueryProvider";
+// app/layout.tsx (Серверная часть)
 import { MantineProvider } from "@mantine/core";
+import { QueryProvider } from "@/providers/QueryProvider";
 import AuthProvider from "@/providers/AuthProvider";
-import "./globals.css";
+import ClientAppLayout from "@/components/layout/ClientAppLayout";
 import "@mantine/core/styles.css";
+import "./globals.css";
 
-export const metadata: Metadata = {
+// Теперь метаданные могут быть экспортированы из серверного компонента
+export const metadata = {
   title: "Моё приложение",
   description: "Описание приложения",
 };
@@ -19,7 +21,7 @@ export default function RootLayout({
         <MantineProvider>
           <AuthProvider>
             <QueryProvider>
-              {children}
+              <ClientAppLayout>{children}</ClientAppLayout>
             </QueryProvider>
           </AuthProvider>
         </MantineProvider>
