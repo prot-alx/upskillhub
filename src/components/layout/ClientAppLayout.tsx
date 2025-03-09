@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { usePathname, useRouter } from "next/navigation";
 import { AppShell, Container, Center, Loader, Text } from "@mantine/core";
 import { useSession } from "next-auth/react";
 import AppHeader from "@/components/layout/AppHeader";
@@ -11,20 +10,21 @@ export default function ClientAppLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   const { status } = useSession();
-  const pathname = usePathname();
-  const router = useRouter();
 
-  const [sidebarOpened, setSidebarOpened] = useState(true);
-
-  const isDashboardPage = pathname?.startsWith("/dashboard");
+  const [currentPath, setCurrentPath] = useState<string | null>(null);
+  const [sidebarOpened, setSidebarOpened] = useState(false);
 
   useEffect(() => {
-    if (status === "unauthenticated" && isDashboardPage) {
-      router.replace("/");
-    }
-  }, [status, isDashboardPage, router]);
+    setCurrentPath(window.location.pathname);
+    setSidebarOpened(true);
+  }, []);
 
+  const isDashboardPage = currentPath?.startsWith("/dashboard");
   const showSidebar = status === "authenticated";
+
+  if (status === "unauthenticated" && isDashboardPage) {
+    return null;
+  }
 
   if (isDashboardPage && status === "loading") {
     return (
@@ -61,7 +61,6 @@ export default function ClientAppLayout({
       }}
       padding="md"
     >
-      {/* Хедер */}
       <AppShell.Header>
         <AppHeader
           sidebarOpened={sidebarOpened}
@@ -70,14 +69,12 @@ export default function ClientAppLayout({
         />
       </AppShell.Header>
 
-      {/* Боковая панель dashboard - только для авторизованных */}
       {showSidebar && (
         <AppShell.Navbar p="md">
           <DashboardSidebar onLinkClick={() => setSidebarOpened(false)} />
         </AppShell.Navbar>
       )}
 
-      {/* Основное содержимое */}
       <AppShell.Main>
         <Container size="lg">{children}</Container>
       </AppShell.Main>
