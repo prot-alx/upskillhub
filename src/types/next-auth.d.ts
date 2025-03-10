@@ -14,6 +14,7 @@ declare module "next-auth" {
       name?: string | null;
       email?: string | null;
       image?: string | null;
+      role?: string;
       settings?: {
         theme: "light" | "dark";
         notifications: boolean;
@@ -27,6 +28,7 @@ declare module "next-auth/jwt" {
   interface JWT {
     id: string;
     accessToken?: string;
+    role?: string;
     settings?: {
       theme: "light" | "dark";
       notifications: boolean;
