@@ -1,13 +1,12 @@
 "use client";
-
-import { useSession } from "next-auth/react";
-import { Container, Text, Stack, Alert, Paper, Title } from "@mantine/core";
-import Link from "next/link";
 import { useState } from "react";
+import Link from "next/link";
+import { Container, Text, Stack, Alert, Paper, Title } from "@mantine/core";
+import { useAuth } from "@/hooks/useAuth";
 import GoogleAuthButton from "@/features/auth/GoogleAuthButton";
 
 export default function AuthPage() {
-  const { status } = useSession();
+  const { status } = useAuth();
   const [error, setError] = useState("");
 
   return (

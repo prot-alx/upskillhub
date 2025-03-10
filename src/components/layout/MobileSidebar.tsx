@@ -1,9 +1,8 @@
 "use client";
-
-import { useSession } from "next-auth/react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { NavLink, Text, Divider, Box, Avatar, Group } from "@mantine/core";
+import { useAuth } from "@/hooks/useAuth";
 import { mainNavLinks, dashboardLinks } from "@/config/navigation";
 
 interface MobileSidebarProps {
@@ -16,7 +15,7 @@ export default function MobileSidebar({
   authStatus,
   onLinkClick,
 }: Readonly<MobileSidebarProps>) {
-  const { data: session } = useSession();
+  const { session } = useAuth();
   const pathname = usePathname();
   const isAuthenticated = authStatus === "authenticated";
 

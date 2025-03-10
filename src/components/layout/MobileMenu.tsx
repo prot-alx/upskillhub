@@ -1,8 +1,7 @@
 "use client";
-
 import Link from "next/link";
 import { Box, Text } from "@mantine/core";
-import { useSession } from "next-auth/react";
+import { useAuth } from "@/hooks/useAuth";
 import { mainNavLinks } from "@/config/navigation";
 
 interface MobileMenuProps {
@@ -10,7 +9,7 @@ interface MobileMenuProps {
 }
 
 export default function MobileMenu({ onLinkClick }: Readonly<MobileMenuProps>) {
-  const { status } = useSession();
+  const { status } = useAuth();
 
   return (
     <Box

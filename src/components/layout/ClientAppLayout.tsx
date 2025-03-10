@@ -1,16 +1,15 @@
 "use client";
-
 import { useState } from "react";
 import { AppShell, Container, Center, Loader, Text } from "@mantine/core";
-import { useSession } from "next-auth/react";
 import { usePathname } from "next/navigation";
+import { useAuth } from "@/hooks/useAuth";
 import AppHeader from "@/components/layout/AppHeader";
 import DashboardSidebar from "@/components/layout/DashboardSidebar";
 
 export default function ClientAppLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
-  const { status } = useSession();
+  const { status } = useAuth();
   const pathname = usePathname();
   const [sidebarOpened, setSidebarOpened] = useState(false);
 

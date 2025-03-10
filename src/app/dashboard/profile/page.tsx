@@ -1,10 +1,9 @@
 "use client";
-
 import { Paper, Title, Text } from "@mantine/core";
-import { useSession } from "next-auth/react";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function ProfilePage() {
-  const { data: session } = useSession();
+  const { session } = useAuth();
 
   return (
     <div>

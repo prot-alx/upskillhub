@@ -1,6 +1,6 @@
 "use client";
 import { Group, Burger, Text, Container, Avatar } from "@mantine/core";
-import { useSession } from "next-auth/react";
+import { useAuth } from "@/hooks/useAuth";
 import { mainNavLinks } from "@/config/navigation";
 import NavLinksList from "./NavLinksList";
 import GoogleAuthButton from "@/features/auth/GoogleAuthButton";
@@ -16,7 +16,7 @@ export default function AppHeader({
   setSidebarOpened,
   showSidebar,
 }: Readonly<AppHeaderProps>) {
-  const { data: session, status } = useSession();
+  const { session, status } = useAuth();
 
   const handleBurgerClick = (e: React.MouseEvent) => {
     e.stopPropagation();

@@ -1,5 +1,4 @@
 "use client";
-
 import NavLinksList from "@/components/layout/NavLinksList";
 import { dashboardLinks } from "@/config/navigation";
 

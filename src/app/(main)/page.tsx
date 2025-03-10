@@ -1,10 +1,9 @@
 "use client";
-
-import { useSession } from "next-auth/react";
 import { Paper, Title, Text } from "@mantine/core";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function HomePage() {
-  const { data: session, status } = useSession();
+  const { session, status } = useAuth();
   const isAuthenticated = status === "authenticated";
 
   return (

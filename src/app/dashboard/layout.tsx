@@ -1,4 +1,3 @@
-// dashboard/layout.tsx
 import ClientAppLayout from "@/components/layout/ClientAppLayout";
 
 export default function DashboardLayout({

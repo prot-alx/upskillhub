@@ -1,5 +1,4 @@
 "use client";
-
 import { useState, useEffect } from "react";
 import { useMantineColorScheme, SegmentedControl } from "@mantine/core";
 

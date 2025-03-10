@@ -1,4 +1,3 @@
-// lib/customColorSchemeManager.ts
 import { MantineColorSchemeManager } from "@mantine/core";
 
 function getCookieValue(name: string): string | undefined {

@@ -1,9 +1,7 @@
-// components/ClientMantineProvider.tsx
 "use client";
-
+import { useEffect, useState } from "react";
 import { MantineProvider } from "@mantine/core";
 import { customColorSchemeManager } from "@/lib/customColorSchemeManager";
-import { useEffect, useState } from "react";
 
 export default function ClientMantineProvider({
   children,
