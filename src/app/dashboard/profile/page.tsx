@@ -1,5 +1,6 @@
 "use client";
 
+import { Paper, Title, Text } from "@mantine/core";
 import { useSession } from "next-auth/react";
 
 export default function ProfilePage() {
@@ -7,11 +8,13 @@ export default function ProfilePage() {
 
   return (
     <div>
-      <h1>Профиль пользователя</h1>
-      <div>
-        <p>Имя: {session?.user?.name}</p>
-        <p>Email: {session?.user?.email}</p>
-      </div>
+      <Title order={2} mb="lg">
+        Профиль пользователя
+      </Title>
+      <Paper shadow="xs" p="md" withBorder>
+        <Text>Имя: {session?.user?.name}</Text>
+        <Text>Email: {session?.user?.email}</Text>
+      </Paper>
     </div>
   );
 }

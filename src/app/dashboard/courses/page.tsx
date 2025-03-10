@@ -1,3 +1,5 @@
+import { Paper, Title, Text } from "@mantine/core";
+
 export default function DashboardCoursesPage() {
   const isAdmin = true;
 
@@ -5,15 +7,21 @@ export default function DashboardCoursesPage() {
     <div>
       {isAdmin ? (
         <>
-          <h1>Управление курсами</h1>
-          <p>Панель управления курсами для администратора</p>
+          <Title order={2} mb="lg">
+            Управление курсами
+          </Title>
+          <Paper shadow="xs" p="md" withBorder>
+            <Text>Панель управления курсами для администратора</Text>
+          </Paper>
         </>
       ) : (
         <>
-          <h1>Мои курсы</h1>
-          <p>Курсы, на которые вы записаны</p>
+          <Title order={2} mb="lg">
+            Мои курсы
+          </Title>
+          <Text>Курсы, на которые вы записаны</Text>
         </>
       )}
     </div>
-  )
+  );
 }

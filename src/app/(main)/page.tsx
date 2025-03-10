@@ -1,6 +1,7 @@
 "use client";
 
 import { useSession } from "next-auth/react";
+import { Paper, Title, Text } from "@mantine/core";
 
 export default function HomePage() {
   const { data: session, status } = useSession();
@@ -8,12 +9,15 @@ export default function HomePage() {
 
   return (
     <div>
-      <h1>Главная страница</h1>
-      <p>Добро пожаловать на сайт курсов</p>
-
-      {isAuthenticated && (
-        <p>Привет, {session?.user?.name ?? "пользователь"}!</p>
-      )}      
+      <Title order={2} mb="lg">
+        Главная страница
+      </Title>
+      <Paper shadow="xs" p="md" withBorder>
+        <Text>Добро пожаловать на сайт курсов</Text>
+        {isAuthenticated && (
+          <Text>Привет, {session?.user?.name ?? "пользователь"}!</Text>
+        )}
+      </Paper>
     </div>
   );
 }

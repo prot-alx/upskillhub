@@ -39,7 +39,7 @@ export default function SettingsPage() {
               />
             </Group>
             <ThemeSwitcher/>
-            <Button type="submit" color="blue">
+            <Button type="submit">
               Сохранить
             </Button>
             {savedSettings && <Text>Настройки успешно сохранены!</Text>}

@@ -2,8 +2,8 @@ import { cookies } from "next/headers";
 import ClientMantineProvider from "@/components/ClientMantineProvider";
 import { QueryProvider } from "@/providers/QueryProvider";
 import AuthProvider from "@/providers/AuthProvider";
-import "@mantine/core/styles.css";
 import "./globals.css";
+import "@mantine/core/styles.css";
 
 export const metadata = {
   title: "UpskillHub",
