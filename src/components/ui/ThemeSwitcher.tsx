@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useMantineColorScheme, SegmentedControl } from "@mantine/core";
+import { customColorSchemeManager } from "@/lib/settings/theme";
 
 export default function ThemeSwitcher() {
   const [mounted, setMounted] = useState(false);
@@ -12,7 +13,7 @@ export default function ThemeSwitcher() {
 
   const handleChange = (value: string) => {
     setColorScheme(value as "light" | "dark");
-    document.cookie = `my-app-theme=${value}; path=/; max-age=31536000`;
+    customColorSchemeManager.set(value as "light" | "dark");
   };
 
   if (!mounted) {

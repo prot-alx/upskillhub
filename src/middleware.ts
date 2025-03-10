@@ -1,62 +1,26 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt";
+import { applyAllSettings } from "./lib/settings";
 
 export async function middleware(req: NextRequest) {
   console.log("Запрос в middleware для URL:", req.nextUrl.pathname);
+
+  // Получаем JWT токен пользователя
   const token = await getToken({
     req,
     secret: process.env.NEXTAUTH_SECRET,
   });
+
   const response = NextResponse.next();
 
-  // Получаем тему (приоритет: 1) куки, 2) токен, 3) дефолт)
-  const getTheme = () => {
-    const cookieTheme = req.cookies.get("my-app-theme")?.value;
+  // Применяем все настройки пользователя к ответу
+  applyAllSettings(req, response, token);
 
-    if (cookieTheme) {
-      return cookieTheme;
-    }
-    if (token?.settings?.theme) {
-      return token.settings.theme;
-    }
-    return "light";
-  };
-
-  // Получаем настройки уведомлений (приоритет: 1) куки, 2) токен, 3) дефолт)
-  const getNotifications = () => {
-    const cookieNotifications = req.cookies.get("my-app-notifications")?.value;
-
-    if (cookieNotifications) {
-      return cookieNotifications;
-    }
-    if (token?.settings?.notifications !== undefined) {
-      return token.settings.notifications.toString();
-    }
-    return "true"; // По умолчанию уведомления включены
-  };
-
-  const theme = getTheme();
-  const notifications = getNotifications();
-
-  // Устанавливаем тему в куки
-  response.cookies.set("my-app-theme", theme, {
-    path: "/",
-    maxAge: 31536000, // 1 год
-    httpOnly: false, // Чтобы JavaScript мог читать куки на клиенте
-    sameSite: "lax",
-  });
-
-  // Устанавливаем настройки уведомлений в куки
-  response.cookies.set("my-app-notifications", notifications, {
-    path: "/",
-    maxAge: 31536000, // 1 год
-    httpOnly: false, // Чтобы JavaScript мог читать куки на клиенте
-    sameSite: "lax",
-  });
-
+  // Обработка редиректов для аутентификации
   if (!token && req.nextUrl.pathname.startsWith("/dashboard")) {
     return NextResponse.redirect(new URL("/", req.url));
   }
+
   if (token && req.nextUrl.pathname === "/auth") {
     return NextResponse.redirect(new URL("/dashboard", req.url));
   }

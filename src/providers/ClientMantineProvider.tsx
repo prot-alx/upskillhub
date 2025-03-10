@@ -1,7 +1,6 @@
 "use client";
-import { useEffect, useState } from "react";
 import { MantineProvider } from "@mantine/core";
-import { customColorSchemeManager } from "@/lib/customColorSchemeManager";
+import { customColorSchemeManager } from "@/lib/settings/theme";
 
 export default function ClientMantineProvider({
   children,
@@ -10,18 +9,10 @@ export default function ClientMantineProvider({
   children: React.ReactNode;
   initialTheme: "light" | "dark";
 }>) {
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
   return (
     <MantineProvider
       defaultColorScheme={initialTheme}
       colorSchemeManager={customColorSchemeManager}
-      // Указываем, что не нужно переписывать атрибуты до монтирования
-      forceColorScheme={mounted ? undefined : initialTheme}
     >
       {children}
     </MantineProvider>
