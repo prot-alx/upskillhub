@@ -1,9 +1,9 @@
 "use client";
-
 import { useState } from "react";
 import { Button } from "@mantine/core";
 import { signIn, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { IconLogin, IconLogout } from "@tabler/icons-react";
 
 type GoogleSignInButtonProps = {
   callbackUrl?: string;
@@ -56,6 +56,8 @@ export default function GoogleLoginLogoutButton({
           loading={isLoading}
           color="red"
           variant="light"
+          leftSection={<IconLogout size={18} />}
+          visibleFrom="sm"
         >
           Выйти
         </Button>
@@ -64,8 +66,32 @@ export default function GoogleLoginLogoutButton({
           onClick={handleGoogleSignIn}
           loading={isLoading}
           color="blue"
+          leftSection={<IconLogin size={18} />}
+          visibleFrom="sm"
         >
           Войти через Google
+        </Button>
+      )}
+
+      {/* Мобильные версии кнопок (только иконки) */}
+      {isAuth === "authenticated" ? (
+        <Button
+          onClick={handleSignOut}
+          loading={isLoading}
+          color="red"
+          variant="light"
+          hiddenFrom="sm"
+        >
+          <IconLogout size={18} />
+        </Button>
+      ) : (
+        <Button
+          onClick={handleGoogleSignIn}
+          loading={isLoading}
+          color="blue"
+          hiddenFrom="sm"
+        >
+          <IconLogin size={18} />
         </Button>
       )}
     </>

@@ -54,6 +54,7 @@ export default function NavLinksList({
             <Link
               href={item.href}
               onClick={onLinkClick}
+              prefetch
               style={{
                 textDecoration: "none",
                 display: "block",

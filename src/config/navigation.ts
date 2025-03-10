@@ -3,12 +3,14 @@ import {
   IconBook,
   IconUser,
   IconSettings,
+  IconHome,
+  IconSchool,
 } from "@tabler/icons-react";
 
 // Основная навигация
 export const mainNavLinks = [
-  { href: "/", label: "Главная" },
-  { href: "/courses", label: "Все курсы" },
+  { href: "/", label: "Главная", icon: IconHome },
+  { href: "/courses", label: "Все курсы", icon: IconSchool },
 ];
 
 // Навигация dashboard для авторизованных пользователей

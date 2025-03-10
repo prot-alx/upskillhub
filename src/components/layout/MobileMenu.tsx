@@ -32,6 +32,7 @@ export default function MobileMenu({ onLinkClick }: Readonly<MobileMenuProps>) {
               key={href}
               href={href}
               onClick={onLinkClick}
+              prefetch
               style={{
                 textDecoration: "none",
                 display: "block",

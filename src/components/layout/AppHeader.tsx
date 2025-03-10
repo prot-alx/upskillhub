@@ -25,7 +25,7 @@ export default function AppHeader({
   };
 
   return (
-    <Container size="lg" h="100%">
+    <Container size="" h="100%">
       <Group h="100%" justify="space-between">
         <Group>
           {/* Бургер меню только для авторизованных пользователей */}
@@ -40,7 +40,7 @@ export default function AppHeader({
           {/* Основная навигация */}
           <NavLinksList
             links={mainNavLinks}
-            linkComponent="text-link"
+            linkComponent="nav-link"
             onLinkClick={() => {}}
           />
         </Group>

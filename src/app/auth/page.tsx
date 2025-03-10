@@ -34,7 +34,7 @@ export default function AuthPage() {
               callbackUrl="/dashboard"
             />
           )}
-          <Link href="/" style={{ marginTop: "20px" }}>
+          <Link href="/" style={{ marginTop: "20px" }} prefetch>
             <Text>На главную</Text>
           </Link>
         </Stack>
