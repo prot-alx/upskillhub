@@ -3,30 +3,40 @@ import { getToken } from "next-auth/jwt";
 
 export async function middleware(req: NextRequest) {
   console.log("Запрос в middleware для URL:", req.nextUrl.pathname);
-
   const token = await getToken({
     req,
     secret: process.env.NEXTAUTH_SECRET,
   });
-
   const response = NextResponse.next();
 
-  // Приоритет: 1) куки, 2) токен, 3) дефолт
-  const getTheme = () => {    
+  // Получаем тему (приоритет: 1) куки, 2) токен, 3) дефолт)
+  const getTheme = () => {
     const cookieTheme = req.cookies.get("my-app-theme")?.value;
-     
+
     if (cookieTheme) {
       return cookieTheme;
     }
-
     if (token?.settings?.theme) {
       return token.settings.theme;
     }
-
     return "light";
   };
 
+  // Получаем настройки уведомлений (приоритет: 1) куки, 2) токен, 3) дефолт)
+  const getNotifications = () => {
+    const cookieNotifications = req.cookies.get("my-app-notifications")?.value;
+
+    if (cookieNotifications) {
+      return cookieNotifications;
+    }
+    if (token?.settings?.notifications !== undefined) {
+      return token.settings.notifications.toString();
+    }
+    return "true"; // По умолчанию уведомления включены
+  };
+
   const theme = getTheme();
+  const notifications = getNotifications();
 
   // Устанавливаем тему в куки
   response.cookies.set("my-app-theme", theme, {
@@ -36,10 +46,17 @@ export async function middleware(req: NextRequest) {
     sameSite: "lax",
   });
 
+  // Устанавливаем настройки уведомлений в куки
+  response.cookies.set("my-app-notifications", notifications, {
+    path: "/",
+    maxAge: 31536000, // 1 год
+    httpOnly: false, // Чтобы JavaScript мог читать куки на клиенте
+    sameSite: "lax",
+  });
+
   if (!token && req.nextUrl.pathname.startsWith("/dashboard")) {
     return NextResponse.redirect(new URL("/", req.url));
   }
-
   if (token && req.nextUrl.pathname === "/auth") {
     return NextResponse.redirect(new URL("/dashboard", req.url));
   }

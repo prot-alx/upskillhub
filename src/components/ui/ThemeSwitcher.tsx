@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { useMantineColorScheme, SegmentedControl } from "@mantine/core";
 
-export function ThemeSwitcher() {
+export default function ThemeSwitcher() {
   const [mounted, setMounted] = useState(false);
   const { colorScheme, setColorScheme } = useMantineColorScheme();
 
