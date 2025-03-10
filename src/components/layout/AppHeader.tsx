@@ -19,6 +19,11 @@ export default function AppHeader({
 }: Readonly<AppHeaderProps>) {
   const { data: session, status } = useSession();
 
+  const handleBurgerClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setSidebarOpened(!sidebarOpened);
+  };
+
   return (
     <Container size="lg" h="100%">
       <Group h="100%" justify="space-between">
@@ -27,12 +32,11 @@ export default function AppHeader({
           {showSidebar && (
             <Burger
               opened={sidebarOpened}
-              onClick={() => setSidebarOpened(!sidebarOpened)}
+              onClick={handleBurgerClick}
               size="sm"
               hiddenFrom="sm"
             />
           )}
-
           {/* Основная навигация */}
           <NavLinksList
             links={mainNavLinks}
@@ -40,7 +44,6 @@ export default function AppHeader({
             onLinkClick={() => {}}
           />
         </Group>
-
         <Group>
           {/* Аватар и имя пользователя - видны только на десктопах */}
           {status === "authenticated" && (
@@ -51,7 +54,6 @@ export default function AppHeader({
               <Text size="sm">{session?.user?.name}</Text>
             </Group>
           )}
-
           {/* Кнопка входа/выхода */}
           <GoogleLoginLogoutButton isAuth={status} callbackUrl="/" />
         </Group>

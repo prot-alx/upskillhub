@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { AppShell, Container, Center, Loader, Text } from "@mantine/core";
 import { useSession } from "next-auth/react";
+import { usePathname } from "next/navigation";
 import AppHeader from "@/components/layout/AppHeader";
 import DashboardSidebar from "@/components/layout/DashboardSidebar";
 
@@ -10,16 +11,10 @@ export default function ClientAppLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   const { status } = useSession();
-
-  const [currentPath, setCurrentPath] = useState<string | null>(null);
+  const pathname = usePathname();
   const [sidebarOpened, setSidebarOpened] = useState(false);
 
-  useEffect(() => {
-    setCurrentPath(window.location.pathname);
-    setSidebarOpened(true);
-  }, []);
-
-  const isDashboardPage = currentPath?.startsWith("/dashboard");
+  const isDashboardPage = pathname?.startsWith("/dashboard");
   const showSidebar = status === "authenticated";
 
   if (status === "unauthenticated" && isDashboardPage) {
@@ -68,13 +63,11 @@ export default function ClientAppLayout({
           showSidebar={showSidebar}
         />
       </AppShell.Header>
-
       {showSidebar && (
         <AppShell.Navbar p="md">
           <DashboardSidebar onLinkClick={() => setSidebarOpened(false)} />
         </AppShell.Navbar>
       )}
-
       <AppShell.Main>
         <Container size="lg">{children}</Container>
       </AppShell.Main>
