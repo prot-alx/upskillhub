@@ -1,10 +1,9 @@
 "use client";
-
 import { Group, Burger, Text, Container, Avatar } from "@mantine/core";
 import { useSession } from "next-auth/react";
-import GoogleLoginLogoutButton from "@/features/auth/GoogleLoginLogoutButton";
 import { mainNavLinks } from "@/config/navigation";
 import NavLinksList from "./NavLinksList";
+import GoogleAuthButton from "@/features/auth/GoogleAuthButton";
 
 interface AppHeaderProps {
   sidebarOpened: boolean;
@@ -37,13 +36,16 @@ export default function AppHeader({
               hiddenFrom="sm"
             />
           )}
-          {/* Основная навигация */}
+
+          {/* Основная навигация - с поддержкой только иконок на мобильных */}
           <NavLinksList
             links={mainNavLinks}
             linkComponent="nav-link"
             onLinkClick={() => {}}
+            iconOnly={true} // Активируем режим только иконок на мобильных
           />
         </Group>
+
         <Group>
           {/* Аватар и имя пользователя - видны только на десктопах */}
           {status === "authenticated" && (
@@ -54,8 +56,9 @@ export default function AppHeader({
               <Text size="sm">{session?.user?.name}</Text>
             </Group>
           )}
+
           {/* Кнопка входа/выхода */}
-          <GoogleLoginLogoutButton isAuth={status} callbackUrl="/" />
+          <GoogleAuthButton isAuth={status} callbackUrl="/" />
         </Group>
       </Group>
     </Container>

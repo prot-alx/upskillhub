@@ -12,7 +12,7 @@ type GoogleSignInButtonProps = {
   onLoadingChange?: (isLoading: boolean) => void;
 };
 
-export default function GoogleLoginLogoutButton({
+export default function GoogleAuthButton({
   callbackUrl = "/dashboard",
   isAuth,
   onError,
@@ -47,7 +47,7 @@ export default function GoogleLoginLogoutButton({
       onLoadingChange?.(false);
     }
   };
-
+  
   return (
     <>
       {isAuth === "authenticated" ? (
@@ -72,7 +72,6 @@ export default function GoogleLoginLogoutButton({
           Войти через Google
         </Button>
       )}
-
       {/* Мобильные версии кнопок (только иконки) */}
       {isAuth === "authenticated" ? (
         <Button

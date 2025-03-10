@@ -4,7 +4,7 @@ import { useSession } from "next-auth/react";
 import { Container, Text, Stack, Alert, Paper, Title } from "@mantine/core";
 import Link from "next/link";
 import { useState } from "react";
-import GoogleLoginLogoutButton from "@/features/auth/GoogleLoginLogoutButton";
+import GoogleAuthButton from "@/features/auth/GoogleAuthButton";
 
 export default function AuthPage() {
   const { status } = useSession();
@@ -28,7 +28,7 @@ export default function AuthPage() {
           {status === "loading" ? (
             <Text>Загрузка...</Text>
           ) : (
-            <GoogleLoginLogoutButton
+            <GoogleAuthButton
               isAuth={status}
               onError={setError}
               callbackUrl="/dashboard"
