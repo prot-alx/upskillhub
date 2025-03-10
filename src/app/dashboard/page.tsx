@@ -1,11 +1,16 @@
+"use client";
 import { Title, Paper, Text } from "@mantine/core";
+import { useAuth } from "@/hooks/useAuth";
+import { Role } from "@prisma/client";
 
 export default function DashboardPage() {
-  const isAdmin = true;
+  const { session } = useAuth();
+
+  const role = session?.user?.role;
 
   return (
     <div>
-      {isAdmin ? (
+      {role === Role.ADMIN ? (
         <>
           <Title order={2} mb="lg">
             Общая статистика

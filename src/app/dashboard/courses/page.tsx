@@ -1,11 +1,16 @@
+"use client";
+import { useAuth } from "@/hooks/useAuth";
 import { Paper, Title, Text } from "@mantine/core";
+import { Role } from "@prisma/client";
 
 export default function DashboardCoursesPage() {
-  const isAdmin = true;
+  const { session } = useAuth();
+
+  const role = session?.user?.role;
 
   return (
     <div>
-      {isAdmin ? (
+      {role === Role.ADMIN ? (
         <>
           <Title order={2} mb="lg">
             Управление курсами
