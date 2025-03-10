@@ -3,51 +3,48 @@ import { getToken } from "next-auth/jwt";
 
 export async function middleware(req: NextRequest) {
   console.log("Запрос в middleware для URL:", req.nextUrl.pathname);
-  console.log("MIDDLEWARE LOADED", new Date().toISOString());
-  try {
-    const token = await getToken({
-      req,
-      secret: process.env.NEXTAUTH_SECRET,
-    });
 
-    console.log("Статус токена:", token ? "Валидный" : "Отсутствует");
+  const token = await getToken({
+    req,
+    secret: process.env.NEXTAUTH_SECRET,
+  });
 
-    // Защищенные маршруты, требующие авторизации
-    if (req.nextUrl.pathname.startsWith("/dashboard")) {
-      if (!token) {
-        console.log("Пользователь не авторизован! Редирект на главную");
-        return NextResponse.redirect(new URL("/", req.url));
-      }
+  const response = NextResponse.next();
+
+  // Приоритет: 1) куки, 2) токен, 3) дефолт
+  const getTheme = () => {    
+    const cookieTheme = req.cookies.get("my-app-theme")?.value;
+     
+    if (cookieTheme) {
+      return cookieTheme;
     }
 
-    // Перенаправить авторизованных пользователей с /auth на /dashboard
-    if (req.nextUrl.pathname === "/auth") {
-      if (token) {
-        console.log("Пользователь уже авторизован! Редирект в dashboard");
-        return NextResponse.redirect(new URL("/dashboard", req.url));
-      }
+    if (token?.settings?.theme) {
+      return token.settings.theme;
     }
 
-    // Если нет перенаправлений, продолжаем обработку запроса
-    const response = NextResponse.next();
+    return "light";
+  };
 
-    // Установка куки для темы
-    const theme =
-      token?.settings?.theme ||
-      req.cookies.get("my-app-theme")?.value ||
-      "light";
-    console.log("Тема для SSR:", theme);
-    response.cookies.set("my-app-theme", theme, {
-      path: "/",
-      maxAge: 31536000,
-    });
+  const theme = getTheme();
 
-    return response;
-  } catch (error) {
-    console.error("Ошибка в middleware:", error);
-    // В случае ошибки, лучше пропустить запрос, чем блокировать доступ
-    return NextResponse.next();
+  // Устанавливаем тему в куки
+  response.cookies.set("my-app-theme", theme, {
+    path: "/",
+    maxAge: 31536000, // 1 год
+    httpOnly: false, // Чтобы JavaScript мог читать куки на клиенте
+    sameSite: "lax",
+  });
+
+  if (!token && req.nextUrl.pathname.startsWith("/dashboard")) {
+    return NextResponse.redirect(new URL("/", req.url));
   }
+
+  if (token && req.nextUrl.pathname === "/auth") {
+    return NextResponse.redirect(new URL("/dashboard", req.url));
+  }
+
+  return response;
 }
 
 export const config = {
