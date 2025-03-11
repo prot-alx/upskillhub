@@ -1,9 +1,8 @@
+
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 // Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -14,13 +13,24 @@ datasource db {
 }
 
 model User {
-  id        String  @id @default(uuid())
-  email     String  @unique
+  id        String      @id @default(uuid())
+  email     String      @unique
   name      String?
-  role      Role    @default(USER)
+  role      Role        @default(USER)
   courses   Enrollment[]
   coursesTaught Course[] @relation("InstructorRelation")
-  createdAt DateTime @default(now())
+  settings  UserSettings? // Связь с настройками
+  createdAt DateTime    @default(now())
+}
+
+model UserSettings {
+  id             String   @id @default(uuid())
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId         String   @unique
+  theme          String   @default("light") // "light" | "dark"
+  notifications  Boolean  @default(true)
+  // Здесь можно добавить другие настройки пользователя
+  updatedAt      DateTime @updatedAt
 }
 
 model Course {
@@ -40,7 +50,6 @@ model Enrollment {
   course   Course @relation(fields: [courseId], references: [id])
   courseId String
   createdAt DateTime @default(now())
-
   @@unique([userId, courseId])
 }
 
