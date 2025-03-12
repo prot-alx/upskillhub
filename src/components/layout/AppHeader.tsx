@@ -17,6 +17,11 @@ export default function AppHeader({
   showSidebar,
 }: Readonly<AppHeaderProps>) {
   const { session, status } = useAuth();
+    // Доступ к информации
+    console.log(session?.user.id)        // ID пользователя
+    console.log(session?.user.email)     // Email
+    console.log(session?.user.role)      // Роль
+    console.log(session?.user.settings)  // Настройки
 
   const handleBurgerClick = (e: React.MouseEvent) => {
     e.stopPropagation();

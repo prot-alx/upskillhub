@@ -1,8 +1,8 @@
+// src/app/api/auth/[...nextauth]/route.ts
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
-import { $Enums, PrismaClient, Role } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import prisma from "@/lib/prisma";
+import { Role } from "@prisma/client";
 
 const handler = NextAuth({
   providers: [
@@ -25,34 +25,67 @@ const handler = NextAuth({
   },
   callbacks: {
     async jwt({ token, account, user }) {
+      // Добавляем токен доступа при первоначальной авторизации
       if (account && user) {
         token.accessToken = account.access_token;
-        token.id = user.id ?? token.sub ?? "temp-id";
-        token.settings = token.settings || {
-          theme: "light",
-          notifications: true,
-        };
-
-        let existingUser = await prisma.user.findUnique({
-          where: { email: token.email ?? "" },
-        });
-
-        if (!existingUser) {
-          existingUser = await prisma.user.create({
-            data: {
-              email: token.email ?? "",
-              name: token.name ?? "",
-              role: Role.USER,
-            },
-          });
-        }
-
-        token.role = existingUser?.role || $Enums.Role.USER;
       }
+
+      // Если у токена есть email, найдем или создадим пользователя
+      if (token.email) {
+        try {
+          // Ищем пользователя по email
+          let dbUser = await prisma.user.findUnique({
+            where: { email: token.email },
+            include: { settings: true },
+          });
+
+          // Если пользователь не найден, создаем его
+          if (!dbUser) {
+            console.log(`Создаем нового пользователя с email: ${token.email}`);
+
+            dbUser = await prisma.user.create({
+              data: {
+                email: token.email,
+                name: token.name ?? "",
+                role: Role.USER,
+              },
+              include: { settings: true },
+            });
+          }
+
+          // Важно! Используем ID из базы данных
+          token.id = dbUser.id;
+          token.role = dbUser.role;
+
+          // Если у пользователя есть настройки, добавляем их в токен
+          if (dbUser.settings) {
+            token.settings = {
+              theme: dbUser.settings.theme as "light" | "dark",
+              notifications: dbUser.settings.notifications,
+            };
+          } else {
+            // Настройки по умолчанию
+            token.settings = {
+              theme: "light",
+              notifications: true,
+            };
+          }
+
+          console.log(`JWT обновлен с ID из БД: ${token.id}`);
+        } catch (error) {
+          console.error(
+            "Ошибка при получении/создании пользователя в JWT callback:",
+            error
+          );
+        }
+      }
+
       return token;
     },
+
     async session({ session, token }) {
       if (session.user) {
+        // Копируем данные из токена в сессию
         session.user.id = token.id;
         session.accessToken = token.accessToken;
         session.user.settings = token.settings;
@@ -63,7 +96,7 @@ const handler = NextAuth({
   },
   session: {
     strategy: "jwt",
-    maxAge: 30 * 24 * 60 * 60,
+    maxAge: 30 * 24 * 60 * 60, // 30 дней
   },
   debug: process.env.NODE_ENV === "development",
 });
