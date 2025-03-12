@@ -1,22 +1,22 @@
 "use client";
 import { useState, useEffect } from "react";
-import { useMantineColorScheme, SegmentedControl } from "@mantine/core";
-import { customColorSchemeManager } from "@/lib/settings/theme";
+import { SegmentedControl } from "@mantine/core";
+import { useSettings } from "@/hooks/useSettings";
 
 export default function ThemeSwitcher() {
   const [mounted, setMounted] = useState(false);
-  const { colorScheme, setColorScheme } = useMantineColorScheme();
+  const { theme, updateTheme, isSettingsLoaded } = useSettings();
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  const handleChange = (value: string) => {
-    setColorScheme(value as "light" | "dark");
-    customColorSchemeManager.set(value as "light" | "dark");
+  const handleChange = async (value: string) => {
+    await updateTheme(value as "light" | "dark");
   };
 
-  if (!mounted) {
+  // Показываем плейсхолдер до полной гидратации компонента
+  if (!mounted || !isSettingsLoaded) {
     return (
       <SegmentedControl
         value="light"
@@ -30,7 +30,7 @@ export default function ThemeSwitcher() {
 
   return (
     <SegmentedControl
-      value={colorScheme}
+      value={theme}
       onChange={handleChange}
       data={[
         { label: "Светлая", value: "light" },

@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt";
-import { applyAllSettings } from "./lib/settings";
 
 export async function middleware(req: NextRequest) {
   console.log("Запрос в middleware для URL:", req.nextUrl.pathname);
@@ -11,11 +10,6 @@ export async function middleware(req: NextRequest) {
     secret: process.env.NEXTAUTH_SECRET,
   });
 
-  const response = NextResponse.next();
-
-  // Применяем все настройки пользователя к ответу
-  applyAllSettings(req, response, token);
-
   // Обработка редиректов для аутентификации
   if (!token && req.nextUrl.pathname.startsWith("/dashboard")) {
     return NextResponse.redirect(new URL("/", req.url));
@@ -25,7 +19,7 @@ export async function middleware(req: NextRequest) {
     return NextResponse.redirect(new URL("/dashboard", req.url));
   }
 
-  return response;
+  return NextResponse.next();
 }
 
 export const config = {

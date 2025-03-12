@@ -4,6 +4,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { mainNavLinks } from "@/config/navigation";
 import NavLinksList from "./NavLinksList";
 import GoogleAuthButton from "@/features/auth/GoogleAuthButton";
+import SyncStatusIndicator from "../ui/SyncStatusIndicator";
 
 interface AppHeaderProps {
   sidebarOpened: boolean;
@@ -17,11 +18,11 @@ export default function AppHeader({
   showSidebar,
 }: Readonly<AppHeaderProps>) {
   const { session, status } = useAuth();
-    // Доступ к информации
-    console.log(session?.user.id)        // ID пользователя
-    console.log(session?.user.email)     // Email
-    console.log(session?.user.role)      // Роль
-    console.log(session?.user.settings)  // Настройки
+  // Доступ к информации
+  console.log(session?.user.id); // ID пользователя
+  console.log(session?.user.email); // Email
+  console.log(session?.user.role); // Роль
+  console.log(session?.user.settings); // Настройки
 
   const handleBurgerClick = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -50,7 +51,7 @@ export default function AppHeader({
             iconOnly={true} // Активируем режим только иконок на мобильных
           />
         </Group>
-
+        <SyncStatusIndicator></SyncStatusIndicator>
         <Group>
           {/* Аватар и имя пользователя - видны только на десктопах */}
           {status === "authenticated" && (

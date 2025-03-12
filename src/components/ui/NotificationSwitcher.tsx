@@ -1,24 +1,22 @@
 "use client";
 import { useState, useEffect } from "react";
 import { Group, Switch, Text } from "@mantine/core";
-import { notificationsClientManager } from "@/lib/settings/notifications";
+import { useSettings } from "@/hooks/useSettings";
 
 export default function NotificationSwitcher() {
   const [mounted, setMounted] = useState(false);
-  const [notifications, setNotifications] = useState(false);
+  const { notifications, updateNotifications, isSettingsLoaded } =
+    useSettings();
 
   useEffect(() => {
-    const storedValue = notificationsClientManager.get();
-    setNotifications(storedValue);
     setMounted(true);
   }, []);
 
-  const handleChange = (checked: boolean) => {
-    setNotifications(checked);
-    notificationsClientManager.set(checked);
+  const handleChange = async (checked: boolean) => {
+    await updateNotifications(checked);
   };
 
-  if (!mounted) {
+  if (!mounted || !isSettingsLoaded) {
     return (
       <Group align="center">
         <Text>Уведомления</Text>
