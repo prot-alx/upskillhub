@@ -1,10 +1,11 @@
 "use client";
-import { Group, Burger, Text, Container, Avatar } from "@mantine/core";
+import { Group, Burger, Text, Container, Avatar, Button } from "@mantine/core";
 import { useAuth } from "@/hooks/useAuth";
 import { mainNavLinks } from "@/config/navigation";
 import NavLinksList from "./NavLinksList";
 import GoogleAuthButton from "@/features/auth/GoogleAuthButton";
 import SyncStatusIndicator from "../ui/SyncStatusIndicator";
+import Link from "next/link";
 
 interface AppHeaderProps {
   sidebarOpened: boolean;
@@ -64,6 +65,14 @@ export default function AppHeader({
           )}
 
           {/* Кнопка входа/выхода */}
+          {status === "authenticated" ? (
+            ""
+          ) : (
+            <Link href="/auth" prefetch>
+              <Button>На страницу авторизации</Button>
+            </Link>
+          )}
+
           <GoogleAuthButton isAuth={status} callbackUrl="/" />
         </Group>
       </Group>

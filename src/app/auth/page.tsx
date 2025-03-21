@@ -1,9 +1,18 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
-import { Container, Text, Stack, Alert, Paper, Title } from "@mantine/core";
+import {
+  Container,
+  Text,
+  Stack,
+  Alert,
+  Paper,
+  Title,
+  Button,
+} from "@mantine/core";
 import { useAuth } from "@/hooks/useAuth";
 import GoogleAuthButton from "@/features/auth/GoogleAuthButton";
+import MockAuthForm from "@/_mock-auth/MockAuthForm";
 
 export default function AuthPage() {
   const { status } = useAuth();
@@ -33,8 +42,9 @@ export default function AuthPage() {
               callbackUrl="/dashboard"
             />
           )}
+          <MockAuthForm></MockAuthForm>
           <Link href="/" style={{ marginTop: "20px" }} prefetch>
-            <Text>На главную</Text>
+            <Button>На главную</Button>
           </Link>
         </Stack>
       </Paper>

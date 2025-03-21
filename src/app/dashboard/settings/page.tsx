@@ -140,6 +140,7 @@ export default function SettingsPage() {
               onClick={handleSaveSettings}
               loading={saveStatus === "saving"}
               leftSection={buttonIcon}
+              w={300}
               color={getButtonColor()}
             >
               {getButtonText()}

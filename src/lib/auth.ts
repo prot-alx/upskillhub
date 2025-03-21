@@ -3,6 +3,7 @@ import { NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import prisma from "@/lib/prisma";
 import { Role, User, UserSettings as PrismaUserSettings } from "@prisma/client";
+import MockAuthProvider from "@/_mock-auth/MockAuthProvider";
 
 interface TokenUserSettings {
   theme: "light" | "dark";
@@ -113,6 +114,9 @@ export const authOptions: NextAuthOptions = {
         },
       },
     }),
+    // ДОБАВИТЬ МОКОВЫЙ ПРОВАЙДЕР
+    ...(process.env.NODE_ENV !== "production" ? [MockAuthProvider()] : []),
+    // Потом удалить ^^^
   ],
   secret: process.env.NEXTAUTH_SECRET,
   pages: {
@@ -121,22 +125,41 @@ export const authOptions: NextAuthOptions = {
   },
   callbacks: {
     async jwt({ token, account, user }) {
+      // ДОБАВЛЕНО: Обработка моковых пользователей
       if (account && user) {
         token.accessToken = account.access_token;
+
+        // Обработка моковых пользователей
+        if (user.id && user.id.startsWith("mock-") && user.email) {
+          token.id = user.id;
+          token.role = user.role;
+          token.settings = DEFAULT_SETTINGS;
+
+          // Проверяем, существует ли пользователь уже в базе
+          const dbUser = await prisma.user.findUnique({
+            where: { email: user.email },
+            include: { settings: true },
+          });
+
+          // Если пользователь уже существует в базе, используем его данные
+          if (dbUser) {
+            updateTokenWithUserSettings(token, dbUser);
+          }
+
+          return token;
+        }
       }
+      // КОНЕЦ ДОБАВЛЕНИЯ
 
       if (token.email) {
         try {
           let dbUser = await findOrCreateUserByEmail(token.email, token.name);
-
           if (dbUser && !dbUser.settings) {
             const updatedUser = await ensureUserSettings(dbUser.id);
-
             if (updatedUser) {
               dbUser = updatedUser;
             }
           }
-
           if (dbUser) {
             updateTokenWithUserSettings(token, dbUser);
           } else {
@@ -153,7 +176,6 @@ export const authOptions: NextAuthOptions = {
           token.settings = DEFAULT_SETTINGS;
         }
       }
-
       return token;
     },
 
@@ -167,6 +189,54 @@ export const authOptions: NextAuthOptions = {
       return session;
     },
   },
+  // callbacks: {
+  //   async jwt({ token, account, user }) {
+  //     if (account && user) {
+  //       token.accessToken = account.access_token;
+  //     }
+
+  //     if (token.email) {
+  //       try {
+  //         let dbUser = await findOrCreateUserByEmail(token.email, token.name);
+
+  //         if (dbUser && !dbUser.settings) {
+  //           const updatedUser = await ensureUserSettings(dbUser.id);
+
+  //           if (updatedUser) {
+  //             dbUser = updatedUser;
+  //           }
+  //         }
+
+  //         if (dbUser) {
+  //           updateTokenWithUserSettings(token, dbUser);
+  //         } else {
+  //           console.warn(
+  //             `Не удалось найти или создать пользователя для email: ${token.email}`
+  //           );
+  //           token.settings = DEFAULT_SETTINGS;
+  //         }
+  //       } catch (error) {
+  //         console.error(
+  //           "Ошибка при получении/создании пользователя в JWT callback:",
+  //           error
+  //         );
+  //         token.settings = DEFAULT_SETTINGS;
+  //       }
+  //     }
+
+  //     return token;
+  //   },
+
+  //   async session({ session, token }) {
+  //     if (session.user) {
+  //       session.user.id = token.id;
+  //       session.accessToken = token.accessToken;
+  //       session.user.settings = token.settings;
+  //       session.user.role = token.role;
+  //     }
+  //     return session;
+  //   },
+  // },
   session: {
     strategy: "jwt",
     maxAge: 30 * 24 * 60 * 60, // 30 дней
