@@ -34,13 +34,16 @@ model UserSettings {
 }
 
 model Course {
-  id          String  @id @default(uuid())
+  id          String     @id @default(uuid())
   title       String
   description String
-  instructor  User    @relation(fields: [instructorId], references: [id], name: "InstructorRelation")
+  image       String     @default("https://via.placeholder.com/300")
+  price       Float      @default(0)
+  isFree      Boolean    @default(true)
+  instructor  User       @relation(fields: [instructorId], references: [id], name: "InstructorRelation")
   instructorId String
   students    Enrollment[]
-  createdAt   DateTime @default(now())
+  createdAt   DateTime   @default(now())
 }
 
 model Enrollment {
@@ -55,5 +58,6 @@ model Enrollment {
 
 enum Role {
   USER
+  INSTRUCTOR
   ADMIN
 }
