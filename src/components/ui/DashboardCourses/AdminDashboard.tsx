@@ -1,6 +1,7 @@
 "use client";
 
 import { Paper, Title, Text, Button } from "@mantine/core";
+import Link from "next/link";
 
 export const AdminDashboard = () => (
   <>
@@ -9,7 +10,9 @@ export const AdminDashboard = () => (
     </Title>
     <Paper shadow="xs" p="md" withBorder mb="md">
       <Text mb="md">Панель управления курсами для администратора</Text>
-      <Button variant="outline">Создать новый курс</Button>
+      <Link href="courses/create">
+        <Button variant="outline">Создать новый курс</Button>
+      </Link>
     </Paper>
   </>
 );

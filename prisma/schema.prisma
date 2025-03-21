@@ -43,7 +43,10 @@ model Course {
   instructor  User       @relation(fields: [instructorId], references: [id], name: "InstructorRelation")
   instructorId String
   students    Enrollment[]
+  status      CourseStatus @default(DRAFT)
+  createdBy   String
   createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
 }
 
 model Enrollment {
@@ -60,4 +63,11 @@ enum Role {
   USER
   INSTRUCTOR
   ADMIN
+}
+
+enum CourseStatus {
+  DRAFT       // Курс в процессе разработки
+  REVIEW      // Ожидает проверки администратором
+  PUBLISHED   // Опубликован и доступен для записи
+  ARCHIVED    // Архивирован (не отображается в общем списке)
 }
