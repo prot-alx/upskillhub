@@ -32,9 +32,10 @@ interface PrismaUserUpdate {
 // Получить пользователя по ID
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     // Проверка авторизации
     const session = await getServerSession(authOptions);
     if (!session?.user?.id) {
@@ -42,12 +43,12 @@ export async function GET(
     }
     // Проверка, что пользователь имеет доступ к этим данным
     // (может видеть только свой профиль или админ может видеть любой)
-    if (session.user.id !== params.id && session.user.role !== "ADMIN") {
+    if (session.user.id !== id && session.user.role !== "ADMIN") {
       return NextResponse.json({ error: "Access denied" }, { status: 403 });
     }
     // Получаем пользователя с настройками
     const user = await prisma.user.findUnique({
-      where: { id: params.id },
+      where: { id: id },
       include: { settings: true },
     });
     if (!user) {
@@ -66,16 +67,17 @@ export async function GET(
 // Обновить пользователя по ID
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     // Проверка авторизации
     const session = await getServerSession(authOptions);
     if (!session?.user?.id) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
     // Проверка, что пользователь имеет доступ к этим данным
-    if (session.user.id !== params.id && session.user.role !== "ADMIN") {
+    if (session.user.id !== id && session.user.role !== "ADMIN") {
       return NextResponse.json({ error: "Access denied" }, { status: 403 });
     }
 
@@ -115,7 +117,7 @@ export async function PATCH(
 
     // Обновляем пользователя и его настройки
     const updatedUser = await prisma.user.update({
-      where: { id: params.id },
+      where: { id: id },
       data: {
         ...validUserUpdates,
         ...(settingsUpdate && { settings: settingsUpdate }),
@@ -136,9 +138,10 @@ export async function PATCH(
 // Удалить пользователя по ID
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     // Проверка авторизации (только админ может удалять пользователей)
     const session = await getServerSession(authOptions);
     if (!session?.user?.id) {
@@ -148,7 +151,7 @@ export async function DELETE(
       return NextResponse.json({ error: "Access denied" }, { status: 403 });
     }
     await prisma.user.delete({
-      where: { id: params.id },
+      where: { id: id },
     });
     return NextResponse.json({ success: true });
   } catch (error) {
